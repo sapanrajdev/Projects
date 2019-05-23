@@ -1,28 +1,48 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from 'react'
+import {
+  BrowserRouter as Router,
+  Route,
+  Link,
+} from 'react-router-dom'
+import { routes } from './routes';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import { usersActions } from './actions/users.action';
 
-class App extends Component {
+class App extends React.Component {
+
+  componentWillMount() {
+    this.props.getUsers();
+  }
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
-    );
+      <Router>
+        <div>
+          <ul>
+            <li><Link to="/users">User List</Link></li>
+            <li><Link to="/registration">Registration</Link></li>
+          </ul>
+
+          {routes.map((route) => (
+            <Route
+              key={route.path}
+              path={route.path}
+              component={route.component}
+            />
+          ))}
+        </div>
+      </Router>
+    )
   }
 }
 
-export default App;
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators(
+    {
+      getUsers: usersActions.getUsers
+    },
+    dispatch,
+  );
+}
+
+export default connect(null, mapDispatchToProps)(App); 
